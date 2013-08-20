@@ -11,6 +11,7 @@ withDayOfWeek = (firstDayOfWeek, fn) ->
 class Calendar
   constructor: (opts = {}) ->
     @currentDate = opts.currentDate
+    @numberOfMonths = opts.numberOfMonths || 2
     @firstDayOfWeek = opts.firstDayOfWeek || 0
 
   previous: ->
@@ -21,8 +22,7 @@ class Calendar
 
   months: ->
     withDayOfWeek @firstDayOfWeek, =>
-      month = new Month(@currentDate)
-      [month, month.next()]
+      (new Month(moment(@currentDate).add(months: offset).toDate()) for offset in [0...@numberOfMonths])
 
   weekDays: ->
     withDayOfWeek @firstDayOfWeek, ->
@@ -30,7 +30,10 @@ class Calendar
 
   _move: (offset) ->
     nextDate = moment(@currentDate).add(months: offset).toDate()
-    new Calendar(currentDate: nextDate, firstDayOfWeek: @firstDayOfWeek)
+    new Calendar
+      currentDate: nextDate
+      firstDayOfWeek: @firstDayOfWeek
+      numberOfMonths: @numberOfMonths
 
 class Month
   constructor: (@date) ->
@@ -76,7 +79,12 @@ class DateRangeController
     $scope.currentDate ||= new Date()
 
     firstVisibleMonth = moment($scope.currentDate).toDate()
-    calendar = new Calendar(firstDayOfWeek: 3, currentDate: firstVisibleMonth)
+    firstDayOfWeek = Number($scope.firstDayOfWeek)
+    numberOfMonths = Number($scope.numberOfMonths)
+    calendar = new Calendar
+      firstDayOfWeek: firstDayOfWeek
+      numberOfMonths: numberOfMonths
+      currentDate: firstVisibleMonth
 
     $scope.months = calendar.months()
     $scope.days = calendar.weekDays()
@@ -113,3 +121,5 @@ app.directive 'dateRange', ->
   templateUrl: '/src/date-range.html'
   scope: 
     currentDate: '=ngModel'
+    firstDayOfWeek: '@'
+    numberOfMonths: '@'

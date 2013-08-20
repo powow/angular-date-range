@@ -55,6 +55,13 @@ describe "DateRange", ->
 
       expect(moment(firstMonth).month()).toEqual(11)
 
+   it "returns specified number of months", ->
+     calendar = new Calendar(currentDate: new Date("2011-01-31"), numberOfMonths: 3)
+     months = calendar.months()
+
+     expect(months.length).toEqual(3)
+     expect(moment(month.date).month() for month in months).toEqual([0, 1, 2])
+
   describe "Day", ->
     date = moment("2011-01-30 21:30").toDate()
 
