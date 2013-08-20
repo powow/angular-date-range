@@ -10,7 +10,7 @@ withDayOfWeek = (firstDayOfWeek, fn) ->
 
 class Calendar
   constructor: (opts = {}) ->
-    @currentDate = opts.currentDate
+    @firstMonthDate = opts.firstMonthDate
     @numberOfMonths = opts.numberOfMonths || 2
     @firstDayOfWeek = opts.firstDayOfWeek || 0
 
@@ -22,16 +22,16 @@ class Calendar
 
   months: ->
     withDayOfWeek @firstDayOfWeek, =>
-      (new Month(moment(@currentDate).add(months: offset).toDate()) for offset in [0...@numberOfMonths])
+      (new Month(moment(@firstMonthDate).add(months: offset).toDate()) for offset in [0...@numberOfMonths])
 
   weekDays: ->
     withDayOfWeek @firstDayOfWeek, ->
       (moment().weekday(i).toDate() for i in [0..6])
 
   _move: (offset) ->
-    nextDate = moment(@currentDate).add(months: offset).toDate()
+    nextDate = moment(@firstMonthDate).add(months: offset).toDate()
     new Calendar
-      currentDate: nextDate
+      firstMonthDate: nextDate
       firstDayOfWeek: @firstDayOfWeek
       numberOfMonths: @numberOfMonths
 
@@ -76,15 +76,15 @@ class Day
 class DateRangeController
   @$inject = ['$scope']
   constructor: ($scope) ->
-    $scope.currentDate ||= new Date()
+    $scope.selectedDate ||= new Date()
 
-    firstVisibleMonth = moment($scope.currentDate).toDate()
+    firstMonthDate = moment($scope.selectedDate).toDate()
     firstDayOfWeek = Number($scope.firstDayOfWeek)
     numberOfMonths = Number($scope.numberOfMonths)
     calendar = new Calendar
       firstDayOfWeek: firstDayOfWeek
       numberOfMonths: numberOfMonths
-      currentDate: firstVisibleMonth
+      firstMonthDate: firstMonthDate
 
     $scope.months = calendar.months()
     $scope.days = calendar.weekDays()
@@ -98,10 +98,10 @@ class DateRangeController
       $scope.months = calendar.months()
 
     $scope.select = (day) ->
-      $scope.currentDate = day.date
+      $scope.selectedDate = day.date
 
     $scope.isSelected = (day) ->
-      day.same($scope.currentDate)
+      day.same($scope.selectedDate)
 
     $scope.colspanForMonth = (month) ->
       colspan = 8
@@ -120,6 +120,6 @@ app.directive 'dateRange', ->
   controller: DateRangeController
   templateUrl: '/src/date-range.html'
   scope: 
-    currentDate: '=ngModel'
+    selectedDate: '=ngModel'
     firstDayOfWeek: '@'
     numberOfMonths: '@'

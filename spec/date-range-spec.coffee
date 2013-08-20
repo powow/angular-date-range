@@ -1,7 +1,7 @@
 describe "DateRange", ->
   describe "calculating calendar", ->
     monthForDate = (date, firstDayOfWeek = 0) ->
-      new Calendar(currentDate: new Date(date), firstDayOfWeek: firstDayOfWeek).months()[0]
+      new Calendar(firstMonthDate: new Date(date), firstDayOfWeek: firstDayOfWeek).months()[0]
      
     it "returns list of weeks in a month", ->
       month = monthForDate("2011-01-01")
@@ -24,7 +24,7 @@ describe "DateRange", ->
       expect(day.placeholder for day in firstWeek.days).toEqual([true, true, true, false, false, false, false])
 
     it "returns the days of week", ->
-      calendar = new Calendar(currentDate: new Date(), firstDayOfWeek: 3)
+      calendar = new Calendar(firstMonthDate: new Date(), firstDayOfWeek: 3)
       days = calendar.weekDays()
 
       dayNames = (moment(day).format('dd') for day in days)
@@ -40,7 +40,7 @@ describe "DateRange", ->
       expect(day.placeholder for day in lastWeek.days).toEqual([false, false, true, true, true, true, true])
 
    it "calculates a calendar for next month", ->
-      calendar = new Calendar(currentDate: new Date("2011-01-31"))
+      calendar = new Calendar(firstMonthDate: new Date("2011-01-31"))
       nextCalendar = calendar.next()
 
       firstMonth = nextCalendar.months()[0].date
@@ -48,7 +48,7 @@ describe "DateRange", ->
       expect(moment(firstMonth).month()).toEqual(1)
 
    it "calculates a calendar for previous month", ->
-      calendar = new Calendar(currentDate: new Date("2011-01-31"))
+      calendar = new Calendar(firstMonthDate: new Date("2011-01-31"))
       previousCalendar = calendar.previous()
 
       firstMonth = previousCalendar.months()[0].date
@@ -56,7 +56,7 @@ describe "DateRange", ->
       expect(moment(firstMonth).month()).toEqual(11)
 
    it "returns specified number of months", ->
-     calendar = new Calendar(currentDate: new Date("2011-01-31"), numberOfMonths: 3)
+     calendar = new Calendar(firstMonthDate: new Date("2011-01-31"), numberOfMonths: 3)
      months = calendar.months()
 
      expect(months.length).toEqual(3)
