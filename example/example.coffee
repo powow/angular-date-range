@@ -13,3 +13,6 @@ app.controller 'ExampleController', ($scope) ->
 
   $scope.selectLastDay = (week) ->
     $scope.dateTo = week.lastDate
+
+  $scope.dateChanged = ->
+    console.log('date to changed', $scope.dateTo)

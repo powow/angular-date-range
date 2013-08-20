@@ -158,6 +158,7 @@ class DateRangeController
       day = new Day($scope.selectedDate)
       $scope.selectedDate = $scope.minDate if day.before($scope.minDate)
       $scope.selectedDate = $scope.maxDate if day.after($scope.maxDate)
+      $scope.dateChanged()
 
 app.directive 'dateRange', ->
   restrict: 'E'
@@ -170,5 +171,6 @@ app.directive 'dateRange', ->
     numberOfMonths: '@'
     dateDisabled: '&'
     weekClicked: '&'
+    dateChanged: '&'
     minDate: '=min'
     maxDate: '=max'
