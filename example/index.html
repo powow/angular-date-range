@@ -3,8 +3,7 @@
   <head>
     <title>Date range example</title>
     <script type="text/javascript" src="/vendor/angular.js"></script>
-    <script type="text/javascript" src="/vendor/angular-ui-bootstrap/src/position/position.js"></script>
-    <script type="text/javascript" src="/vendor/angular-ui-bootstrap/src/datepicker/datepicker.js"></script>
+    <script type="text/javascript" src="/vendor/moment.js"></script>
     <script type="text/javascript" src="example.js"></script>
     <script type="text/javascript" src="/src/date-range.js"></script>
     <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.css" />
@@ -13,25 +12,27 @@
     <div class="container">
       <div class="form-horizontal" ng-controller="ExampleController">
         <label for="date-from">From:</label>
-        <input type="text"
+        <date-range
           id="date-from"
-          datepicker-popup
           ng-model="dateFrom"
           number-of-months="2"
           min="today()"
           max="oneYearFromNow()"
-          ng-required="true" />
+          ng-required="true" ></date-range>
 
         <label for="date-to">To:</label>
-        <input type="text"
+        <date-range
           id="date-to"
-          datepicker-popup
           ng-model="dateTo"
           number-of-months="2"
           daterange-begin="dateFrom"
           min="today()"
           max="oneYearFromNow()"
-          ng-required="true" />
+          ng-required="true" ></date-range>
+
+
+          <pre>{{dateFrom | date}}</pre>
+          <pre>{{dateTo | date}}</pre>
       </div>
     </div>
   </body>

@@ -1,0 +1,29 @@
+<div class="row">
+  <table class="span2" ng-repeat="month in months">
+    <thead>
+      <tr class="text-center">
+        <th ng-show="firstMonth(month)"><button type="button" class="btn pull-left" ng-click="previousMonth()"><i class="icon-chevron-left"></i></button></th>
+        <th colspan="{{colspanForMonth(month)}}"><strong>{{month.date | date:'MMMM'}}</strong></th>
+        <th ng-show="lastMonth(month)"><button type="button" class="btn pull-right" ng-click="nextMonth()"><i class="icon-chevron-right"></i></button></th>
+      </tr>
+      <tr class="text-center">
+        <th>#</th>
+        <th ng-repeat="day in days">{{day | date:'EEE'}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="week in month.weeks">
+        <td class="text-center"><em>{{week.number}}</em></td>
+        <td ng-repeat="day in week.days" class="text-center">
+          <button type="button"
+            ng-hide="day.placeholder"
+            style="width:100%;"
+            class="btn"
+            ng-class="{'btn-info': isSelected(day)}"
+            ng-click="select(day)"
+            ng-disabled="day.disabled">{{day.number}}</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
