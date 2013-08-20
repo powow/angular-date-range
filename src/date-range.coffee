@@ -75,38 +75,37 @@ class PlaceholderDay
 
 class Day
   constructor: (date) ->
-    @date = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    @date = @_normalize(date)
     @placeholder = false
     @number = date.getDate()
 
   same: (date) ->
     return false unless date
-    @date - @_unix(date) == 0
+    @_diff(date) == 0
 
   before: (date) ->
     return false unless date
-    @date - @_unix(date) < 0
+    @_diff(date) < 0
 
   after: (date) ->
     return false unless date
-    @date - @_unix(date) > 0
+    @_diff(date) > 0
 
-  _unix: (date) ->
-    d = new Date(date)
-    new Date(d.getFullYear(), d.getMonth(), d.getDate())
+  _diff: (date) ->
+    @date - @_normalize(new Date(date))
+
+  _normalize: (date) ->
+    new Date(date.getFullYear(), date.getMonth(), date.getDate())
 
 class DateRangeController
   @$inject = ['$scope']
   constructor: ($scope) ->
     $scope.selectedDate ||= new Date()
 
-    firstMonthDate = m($scope.selectedDate).toDate()
-    firstDayOfWeek = Number($scope.firstDayOfWeek)
-    numberOfMonths = Number($scope.numberOfMonths)
     calendar = new Calendar
-      firstDayOfWeek: firstDayOfWeek
-      numberOfMonths: numberOfMonths
-      firstMonthDate: firstMonthDate
+      firstDayOfWeek: Number($scope.firstDayOfWeek)
+      numberOfMonths: Number($scope.numberOfMonths)
+      firstMonthDate: m($scope.selectedDate).toDate()
 
     $scope.months = calendar.months()
     $scope.days = calendar.weekDays()
