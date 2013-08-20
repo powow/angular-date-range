@@ -71,7 +71,7 @@ describe "DateRange", ->
       expect(new Day(date).before(undefined)).toBeFalsy()
 
     it "can be compared with a string", ->
-      expect(new Day(date).same("2011-01-30 12:51")).toBeTruthy()
+      expect(new Day(date).same("2011-01-30T12:51")).toBeTruthy()
       expect(new Day(date).same("2011-01-31")).toBeFalsy()
 
     it "can be compared with a date", ->

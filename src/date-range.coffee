@@ -74,24 +74,26 @@ class PlaceholderDay
   after: -> false
 
 class Day
-  constructor: (@date) ->
+  constructor: (date) ->
+    @date = new Date(date.getFullYear(), date.getMonth(), date.getDate())
     @placeholder = false
-    @number = m(@date).date()
+    @number = date.getDate()
 
   same: (date) ->
     return false unless date
-    @_unix(@date) == @_unix(date)
+    @date - @_unix(date) == 0
 
   before: (date) ->
     return false unless date
-    @_unix(@date) < @_unix(date)
+    @date - @_unix(date) < 0
 
   after: (date) ->
     return false unless date
-    @_unix(@date) > @_unix(date)
+    @date - @_unix(date) > 0
 
   _unix: (date) ->
-    m(date).startOf('day').unix()
+    d = new Date(date)
+    new Date(d.getFullYear(), d.getMonth(), d.getDate())
 
 class DateRangeController
   @$inject = ['$scope']
