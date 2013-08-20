@@ -18,6 +18,7 @@
           number-of-months="1"
           min="today"
           max="fourMonthsFromNow"
+          week-clicked="selectFirstDay(week)"
           date-disabled="isWeekend(date)"
           ng-required="true" ></date-range>
 
@@ -29,6 +30,7 @@
           first-day-of-week="3"
           date-range-begin="dateFrom"
           min="today"
+          week-clicked="selectLastDay(week)"
           ng-required="true" ></date-range>
 
 

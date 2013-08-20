@@ -13,7 +13,7 @@
     </thead>
     <tbody>
       <tr ng-repeat="week in month.weeks">
-        <td class="text-center"><em>{{week.number}}</em></td>
+        <td class="text-center"><a href ng-click="weekClicked({week: week})">{{week.number}}</a></td>
         <td ng-repeat="day in week.days" class="text-center">
           <button type="button"
             ng-hide="day.placeholder"

@@ -88,3 +88,11 @@ describe "DateRange", ->
       expect(new Day(date).after(moment("2011-01-30 12:51").toDate())).toBeFalsy()
       expect(new Day(date).after(moment("2011-01-31 22:51").toDate())).toBeFalsy()
 
+  describe 'Week', ->
+    it "calculates the first date", ->
+      week = new Week(new Date("2013-08-20"))
+      expect(new Day(week.firstDate).same("2013-08-18")).toBeTruthy()
+
+    it "calculates the last date", ->
+      week = new Week(new Date("2013-08-20"))
+      expect(new Day(week.lastDate).same("2013-08-24")).toBeTruthy()

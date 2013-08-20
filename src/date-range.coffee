@@ -1,12 +1,16 @@
 app = angular.module('powow.bootstrap.date-range', [])
 
+# immutable moment wrapper
+m = (date) ->
+  moment(date).clone()
+
 withDayOfWeek = (firstDayOfWeek, fn) ->
-  week = angular.copy(moment().lang()._week)
+  week = angular.copy(m().lang()._week)
   try
-    moment().lang().set(week: {dow: firstDayOfWeek, doy: week.doy})
+    m().lang().set(week: {dow: firstDayOfWeek, doy: week.doy})
     fn()
   finally
-    moment().lang().set(week: week)
+    m().lang().set(week: week)
 
 class Calendar
   constructor: (opts = {}) ->
@@ -22,14 +26,14 @@ class Calendar
 
   months: ->
     withDayOfWeek @firstDayOfWeek, =>
-      (new Month(moment(@firstMonthDate).add(months: offset).toDate()) for offset in [0...@numberOfMonths])
+      (new Month(m(@firstMonthDate).add(months: offset).toDate()) for offset in [0...@numberOfMonths])
 
   weekDays: ->
     withDayOfWeek @firstDayOfWeek, ->
-      (moment().weekday(i).toDate() for i in [0..6])
+      (m().weekday(i).toDate() for i in [0..6])
 
   _move: (offset) ->
-    nextDate = moment(@firstMonthDate).add(months: offset).toDate()
+    nextDate = m(@firstMonthDate).add(months: offset).toDate()
     new Calendar
       firstMonthDate: nextDate
       firstDayOfWeek: @firstDayOfWeek
@@ -37,26 +41,29 @@ class Calendar
 
 class Month
   constructor: (@date) ->
-    month = moment(@date).month()
-    day = moment(@date).startOf('month')
+    month = m(@date).month()
+    day = m(@date).startOf('month')
     @weeks = []
     week = {}
     while day.month() == month
       if day.week() != week.number
-        week = new Week(day.week())
+        week = new Week(day)
         @weeks.push(week)
-      week.addDay(moment(day).toDate())
+      week.addDay(m(day).toDate())
       day.add(days: 1)
 
   next: ->
-    new Month(moment(@date).add(months: 1).toDate())
+    new Month(m(@date).add(months: 1).toDate())
 
 class Week
-  constructor: (@number) ->
+  constructor: (@date) ->
+    @number = m(@date).week()
+    @firstDate = m(@date).startOf('week').toDate()
+    @lastDate = m(@date).endOf('week').toDate()
     @days = (new PlaceholderDay() for dayNumber in [0..6])
 
   addDay: (day) ->
-    @days[moment(day).weekday()] = new Day(day)
+    @days[m(day).weekday()] = new Day(day)
 
 class PlaceholderDay
   constructor: ->
@@ -69,7 +76,7 @@ class PlaceholderDay
 class Day
   constructor: (@date) ->
     @placeholder = false
-    @number = moment(@date).date()
+    @number = m(@date).date()
 
   same: (date) ->
     return false unless date
@@ -84,14 +91,14 @@ class Day
     @_unix(@date) > @_unix(date)
 
   _unix: (date) ->
-    moment(date).clone().startOf('day').unix()
+    m(date).startOf('day').unix()
 
 class DateRangeController
   @$inject = ['$scope']
   constructor: ($scope) ->
     $scope.selectedDate ||= new Date()
 
-    firstMonthDate = moment($scope.selectedDate).toDate()
+    firstMonthDate = m($scope.selectedDate).toDate()
     firstDayOfWeek = Number($scope.firstDayOfWeek)
     numberOfMonths = Number($scope.numberOfMonths)
     calendar = new Calendar
@@ -145,6 +152,11 @@ class DateRangeController
       return unless new Day($scope.dateRangeBegin).after($scope.selectedDate)
       $scope.selectedDate = $scope.dateRangeBegin
 
+    $scope.$watch 'selectedDate', ->
+      day = new Day($scope.selectedDate)
+      $scope.selectedDate = $scope.minDate if day.before($scope.minDate)
+      $scope.selectedDate = $scope.maxDate if day.after($scope.maxDate)
+
 app.directive 'dateRange', ->
   restrict: 'E'
   controller: DateRangeController
@@ -155,5 +167,6 @@ app.directive 'dateRange', ->
     firstDayOfWeek: '@'
     numberOfMonths: '@'
     dateDisabled: '&'
+    weekClicked: '&'
     minDate: '=min'
     maxDate: '=max'
