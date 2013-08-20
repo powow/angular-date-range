@@ -21,7 +21,7 @@
             class="btn"
             ng-class="{'btn-info': isSelected(day), 'btn-primary': isBeginOfRange(day), 'btn-warning': isInsideRange(day)}"
             ng-click="select(day)"
-            ng-disabled="day.disabled">{{day.number}}</button>
+            ng-disabled="isDisabled(day)">{{day.number}}</button>
         </td>
       </tr>
     </tbody>

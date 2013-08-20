@@ -16,8 +16,9 @@
           id="date-from"
           ng-model="dateFrom"
           number-of-months="1"
-          min="today()"
-          max="oneYearFromNow()"
+          min="today"
+          max="fourMonthsFromNow"
+          date-disabled="isWeekend(date)"
           ng-required="true" ></date-range>
 
         <label for="date-to">To:</label>
@@ -27,8 +28,7 @@
           number-of-months="2"
           first-day-of-week="3"
           date-range-begin="dateFrom"
-          min="today()"
-          max="oneYearFromNow()"
+          min="today"
           ng-required="true" ></date-range>
 
 

@@ -72,17 +72,19 @@ class Day
     @number = moment(@date).date()
 
   same: (date) ->
+    return false unless date
     @_unix(@date) == @_unix(date)
 
   before: (date) ->
+    return false unless date
     @_unix(@date) < @_unix(date)
 
   after: (date) ->
+    return false unless date
     @_unix(@date) > @_unix(date)
 
   _unix: (date) ->
-    moment(date).startOf('day').unix()
-
+    moment(date).clone().startOf('day').unix()
 
 class DateRangeController
   @$inject = ['$scope']
@@ -126,11 +128,22 @@ class DateRangeController
       colspan -= 1 if $scope.lastMonth(month)
       colspan
 
+    $scope.isDisabled = (day) ->
+      $scope.dateDisabled(date: day.date) || 
+        day.before($scope.minDate) || 
+        day.before($scope.dateRangeBegin) || 
+        day.after($scope.maxDate)
+
     $scope.firstMonth = (month) ->
       $scope.months[0] == month
 
     $scope.lastMonth = (month) ->
       $scope.months[$scope.months.length - 1] == month
+
+    $scope.$watch 'dateRangeBegin', ->
+      return unless $scope.dateRangeBegin
+      return unless new Day($scope.dateRangeBegin).after($scope.selectedDate)
+      $scope.selectedDate = $scope.dateRangeBegin
 
 app.directive 'dateRange', ->
   restrict: 'E'
@@ -141,3 +154,6 @@ app.directive 'dateRange', ->
     dateRangeBegin: '='
     firstDayOfWeek: '@'
     numberOfMonths: '@'
+    dateDisabled: '&'
+    minDate: '=min'
+    maxDate: '=max'

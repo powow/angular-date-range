@@ -65,6 +65,11 @@ describe "DateRange", ->
   describe "Day", ->
     date = moment("2011-01-30 21:30").toDate()
 
+    it "always returns false if comparing with an undefined value", ->
+      expect(new Day(date).same(undefined)).toBeFalsy()
+      expect(new Day(date).after(undefined)).toBeFalsy()
+      expect(new Day(date).before(undefined)).toBeFalsy()
+
     it "can be compared with a string", ->
       expect(new Day(date).same("2011-01-30 12:51")).toBeTruthy()
       expect(new Day(date).same("2011-01-31")).toBeFalsy()
