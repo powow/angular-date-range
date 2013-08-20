@@ -72,3 +72,14 @@ describe "DateRange", ->
     it "can be compared with a date", ->
       expect(new Day(date).same(moment("2011-01-30 12:51").toDate())).toBeTruthy()
       expect(new Day(date).same(new Date("2011-01-31"))).toBeFalsy()
+
+    it "is before when the given date is at least one day later", ->
+      expect(new Day(date).before(moment("2011-01-31 12:51").toDate())).toBeTruthy()
+      expect(new Day(date).before(moment("2011-01-30 22:51").toDate())).toBeFalsy()
+      expect(new Day(date).before(moment("2011-01-29 22:51").toDate())).toBeFalsy()
+
+    it "is after the given date is at least one day before", ->
+      expect(new Day(date).after(moment("2011-01-29 12:51").toDate())).toBeTruthy()
+      expect(new Day(date).after(moment("2011-01-30 12:51").toDate())).toBeFalsy()
+      expect(new Day(date).after(moment("2011-01-31 22:51").toDate())).toBeFalsy()
+

@@ -53,8 +53,7 @@ class Month
 
 class Week
   constructor: (@number) ->
-    @days = []
-    (@days[dayNumber] = new PlaceholderDay() for dayNumber in [0..6])
+    @days = (new PlaceholderDay() for dayNumber in [0..6])
 
   addDay: (day) ->
     @days[moment(day).weekday()] = new Day(day)
@@ -64,6 +63,8 @@ class PlaceholderDay
     @placeholder = true
 
   same: -> false
+  before: -> false
+  after: -> false
 
 class Day
   constructor: (@date) ->
@@ -71,7 +72,17 @@ class Day
     @number = moment(@date).date()
 
   same: (date) ->
-    moment(@date).startOf('day').unix() == moment(date).startOf('day').unix()
+    @_unix(@date) == @_unix(date)
+
+  before: (date) ->
+    @_unix(@date) < @_unix(date)
+
+  after: (date) ->
+    @_unix(@date) > @_unix(date)
+
+  _unix: (date) ->
+    moment(date).startOf('day').unix()
+
 
 class DateRangeController
   @$inject = ['$scope']
@@ -103,6 +114,12 @@ class DateRangeController
     $scope.isSelected = (day) ->
       day.same($scope.selectedDate)
 
+    $scope.isBeginOfRange = (day) ->
+      day.same($scope.dateRangeBegin)
+
+    $scope.isInsideRange = (day) ->
+      day.after($scope.dateRangeBegin) && day.before($scope.selectedDate)
+
     $scope.colspanForMonth = (month) ->
       colspan = 8
       colspan -= 1 if $scope.firstMonth(month)
@@ -121,5 +138,6 @@ app.directive 'dateRange', ->
   templateUrl: '/src/date-range.html'
   scope: 
     selectedDate: '=ngModel'
+    dateRangeBegin: '='
     firstDayOfWeek: '@'
     numberOfMonths: '@'

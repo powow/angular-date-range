@@ -19,7 +19,7 @@
             ng-hide="day.placeholder"
             style="width:100%;"
             class="btn"
-            ng-class="{'btn-info': isSelected(day)}"
+            ng-class="{'btn-info': isSelected(day), 'btn-primary': isBeginOfRange(day), 'btn-warning': isInsideRange(day)}"
             ng-click="select(day)"
             ng-disabled="day.disabled">{{day.number}}</button>
         </td>

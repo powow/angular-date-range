@@ -15,7 +15,7 @@
         <date-range
           id="date-from"
           ng-model="dateFrom"
-          number-of-months="2"
+          number-of-months="1"
           min="today()"
           max="oneYearFromNow()"
           ng-required="true" ></date-range>
@@ -24,9 +24,9 @@
         <date-range
           id="date-to"
           ng-model="dateTo"
-          number-of-months="3"
+          number-of-months="2"
           first-day-of-week="3"
-          daterange-begin="dateFrom"
+          date-range-begin="dateFrom"
           min="today()"
           max="oneYearFromNow()"
           ng-required="true" ></date-range>
