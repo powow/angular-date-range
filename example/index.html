@@ -12,15 +12,18 @@
     <div class="container">
       <div class="form-horizontal" ng-controller="ExampleController">
         <label for="date-from">From:</label>
+
         <date-range
           id="date-from"
           ng-model="dateFrom"
+          date-format="YYYY-MM-DD"
           number-of-months="1"
           min="today"
           max="fourMonthsFromNow"
           week-clicked="selectFirstDay(week)"
           date-disabled="isWeekend(date)"
-          ng-required="true" ></date-range>
+          ng-required="true">
+        </date-range>
 
         <label for="date-to">To:</label>
         <date-range
@@ -32,7 +35,8 @@
           min="today"
           week-clicked="selectLastDay(week)"
           date-changed="dateChanged()"
-          ng-required="true" ></date-range>
+          ng-required="true" >
+        </date-range>
 
           <pre>{{dateFrom | date}}</pre>
           <pre>{{dateTo | date}}</pre>

@@ -8,6 +8,7 @@ withDayOfWeek = (firstDayOfWeek, fn) ->
   week = angular.copy(m().lang()._week)
   try
     m().lang().set(week: {dow: firstDayOfWeek, doy: week.doy})
+    
     fn()
   finally
     m().lang().set(week: week)
@@ -77,7 +78,7 @@ class Day
   constructor: (date) ->
     @date = @_normalize(date)
     @placeholder = false
-    @number = date.getDate()
+    @number = @date.getDate()
 
   same: (date) ->
     return false unless date
@@ -95,6 +96,7 @@ class Day
     @date - @_normalize(new Date(date))
 
   _normalize: (date) ->
+    date = new Date(date)
     new Date(date.getFullYear(), date.getMonth(), date.getDate())
 
 class DateRangeController
@@ -154,12 +156,13 @@ class DateRangeController
       $scope.selectedDate = $scope.dateRangeBegin
 
     $scope.$watch 'selectedDate', ->
+      return unless $scope.selectedDate
       day = new Day($scope.selectedDate)
       $scope.selectedDate = $scope.minDate if day.before($scope.minDate)
       $scope.selectedDate = $scope.maxDate if day.after($scope.maxDate)
       $scope.dateChanged()
 
-app.directive 'dateRange', ->
+app.directive 'dateRangePicker', ->
   restrict: 'E'
   controller: DateRangeController
   templateUrl: '/src/date-range.html'
@@ -173,3 +176,38 @@ app.directive 'dateRange', ->
     dateChanged: '&'
     minDate: '=min'
     maxDate: '=max'
+
+app.directive 'dateFormat', ->
+  restrict: 'A'
+  require: 'ngModel'
+  link: (scope, element, attributes, ngModel) ->
+    format = attributes.dateFormat
+
+    isValid = (value) ->
+      moment(value, format).isValid() && moment(value, format).format(format) == value
+
+    ngModel.$parsers.unshift (value) ->
+      if isValid(value)
+        ngModel.$setValidity('dateFormat', true)
+        moment(value, format).toDate()
+      else
+        ngModel.$setValidity('dateFormat', false)
+        undefined
+
+    ngModel.$formatters.push (value) ->
+      return moment(value).format(format) if value
+    
+app.directive 'dateRange', ->
+  restrict: 'E'
+  compile: (element, attributes) ->
+    input = angular.element('<input type="text"/>')
+    picker = angular.element('<date-range-picker></date-range-picker>')
+
+    for normalized, original of attributes.$attr
+      input.attr(original, attributes[normalized])
+      picker.attr(original, attributes[normalized])
+
+    popup = angular.element('<date-range-popup></date-range-popup>').append(picker)
+    element.append(input).append(popup)
+
+    return ->
