@@ -1,4 +1,4 @@
-app = angular.module('powow.bootstrap.date-range', [])
+app = angular.module('powow.bootstrap.date-range', ['ui.bootstrap.position'])
 
 # immutable moment wrapper
 m = (date) ->
@@ -93,7 +93,7 @@ class Day
     @_diff(date) > 0
 
   _diff: (date) ->
-    @date - @_normalize(new Date(date))
+    @date - @_normalize(date)
 
   _normalize: (date) ->
     date = new Date(date)
@@ -197,17 +197,54 @@ app.directive 'dateFormat', ->
     ngModel.$formatters.push (value) ->
       return moment(value).format(format) if value
     
-app.directive 'dateRange', ->
+dateRangeDirective = ($document, $position) ->
   restrict: 'E'
+
+  template: """
+  <input type="text" />
+
+  <ul class="dropdown-menu date-range-popup">
+    <li>
+      <date-range-picker></date-range-picker>
+    </li>
+    <li class="divider"></li>
+    <li class="clearfix" style="padding: 3px 9px;"><button class="close-popup btn btn-success btn-small pull-right">Close</button></li>
+  </ul>
+  """
+
   compile: (element, attributes) ->
-    input = angular.element('<input type="text"/>')
-    picker = angular.element('<date-range-picker></date-range-picker>')
+    input = element.find('input')
+    picker = element.find('date-range-picker')
 
     for normalized, original of attributes.$attr
       input.attr(original, attributes[normalized])
       picker.attr(original, attributes[normalized])
 
-    popup = angular.element('<date-range-popup></date-range-popup>').append(picker)
-    element.append(input).append(popup)
+    return (scope, element, attributes) ->
+      popup = element.find('ul')
+      input = element.find('input')
 
-    return ->
+      popup.css('display', 'none')
+
+      hidePopup = ->
+        popup.css('display', 'none')
+        $document.unbind('click', hidePopup)
+
+      showPopup = ->
+        position = $position.position(input)
+        popup.css 
+          display: 'block'
+          top: position.top + position.height + 'px'
+          left: position.left + 'px'
+
+      input.on 'focus', ->
+        angular.element(document.getElementsByClassName('date-range-popup')).css('display', 'none')
+        showPopup()
+        $document.on 'click', hidePopup
+
+      angular.element(element[0].getElementsByClassName('close-popup')).on 'click', hidePopup
+      
+      element.on 'click', (event) ->
+        event.stopPropagation()
+
+app.directive 'dateRange', ['$document', '$position', dateRangeDirective]
