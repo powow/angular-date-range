@@ -199,19 +199,7 @@ app.directive 'dateFormat', ->
     
 dateRangeDirective = ($document, $position) ->
   restrict: 'E'
-
-  template: """
-  <input type="text" />
-
-  <ul class="dropdown-menu date-range-popup">
-    <li>
-      <date-range-picker></date-range-picker>
-    </li>
-    <li class="divider"></li>
-    <li class="clearfix" style="padding: 3px 9px;"><button class="close-popup btn btn-success btn-small pull-right">Close</button></li>
-  </ul>
-  """
-
+  templateUrl: "/src/date-range-popup.html"
   compile: (element, attributes) ->
     input = element.find('input')
     picker = element.find('date-range-picker')
