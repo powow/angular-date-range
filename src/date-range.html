@@ -2,9 +2,9 @@
   <table class="span2" ng-repeat="month in months">
     <thead>
       <tr class="text-center">
-        <th ng-show="firstMonth(month)"><button type="button" class="btn pull-left" ng-click="previousMonth()"><i class="icon-chevron-left"></i></button></th>
+        <th ng-show="firstMonth(month)"><button type="button" class="btn pull-left prev-month" ng-click="previousMonth()"><i class="icon-chevron-left"></i></button></th>
         <th colspan="{{colspanForMonth(month)}}"><strong>{{month.date | date:'MMMM'}}</strong></th>
-        <th ng-show="lastMonth(month)"><button type="button" class="btn pull-right" ng-click="nextMonth()"><i class="icon-chevron-right"></i></button></th>
+        <th ng-show="lastMonth(month)"><button type="button" class="btn pull-right next-month" ng-click="nextMonth()"><i class="icon-chevron-right"></i></button></th>
       </tr>
       <tr class="text-center">
         <th>#</th>
@@ -18,7 +18,7 @@
           <button type="button"
             ng-hide="day.placeholder"
             style="width:100%;"
-            class="btn"
+            class="btn select-day"
             ng-class="{'btn-info': isSelected(day), 'btn-primary': isBeginOfRange(day), 'btn-warning': isInsideRange(day)}"
             ng-click="select(day)"
             ng-disabled="isDisabled(day)">{{day.number}}</button>

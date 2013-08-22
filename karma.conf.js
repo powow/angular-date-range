@@ -16,7 +16,6 @@ module.exports = function(config) {
     files: [
       'vendor/angular.js',
       'vendor/moment.js',
-      'vendor/angular-mocks.js',
       'src/**/*.coffee',
       'spec/**/*.coffee'
     ],
