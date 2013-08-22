@@ -207,6 +207,7 @@ dateRangeDirective = ($document, $position) ->
     for normalized, original of attributes.$attr
       input.attr(original, attributes[normalized])
       picker.attr(original, attributes[normalized])
+      element.removeAttr(original)
 
     return (scope, element, attributes) ->
       popup = element.find('ul')
