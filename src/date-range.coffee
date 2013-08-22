@@ -1,4 +1,4 @@
-app = angular.module('powow.bootstrap.date-range', ['ui.bootstrap.position'])
+app = angular.module('powow.bootstrap.date-range.src', ['ui.bootstrap.position'])
 
 # immutable moment wrapper
 m = (date) ->

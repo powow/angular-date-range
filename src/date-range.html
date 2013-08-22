@@ -1,5 +1,6 @@
 <div class="row">
-  <table class="span2" ng-repeat="month in months">
+  <div class="span4" ng-repeat="month in months">
+  <table>
     <thead>
       <tr class="text-center">
         <th ng-show="firstMonth(month)"><button type="button" class="btn pull-left prev-month" ng-click="previousMonth()"><i class="icon-chevron-left"></i></button></th>
@@ -26,4 +27,5 @@
       </tr>
     </tbody>
   </table>
+  </div>
 </div>

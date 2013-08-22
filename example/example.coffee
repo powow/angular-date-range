@@ -1,4 +1,4 @@
-app = angular.module('date-range.example', ['powow.bootstrap.date-range'])
+app = angular.module('date-range.example', ['powow.bootstrap.date-range.src'])
 app.controller 'ExampleController', ($scope) ->
   $scope.dateTo = moment().add(days: 13).toDate()
   $scope.today = new Date()
