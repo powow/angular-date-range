@@ -1,0 +1,38 @@
+template = """
+<div class="clearfix">
+  <table class="pull-left" ng-repeat="month in months" style="margin-right: 10px;">
+    <thead>
+      <tr class="text-center">
+        <th ng-show="firstMonth(month)"><button type="button" class="btn btn-small pull-left prev-month" ng-click="previousMonth()"><i class="icon-chevron-left"></i></button></th>
+        <th colspan="{{colspanForMonth(month)}}"><strong>{{month.date | date:'MMMM'}}</strong></th>
+        <th ng-show="lastMonth(month)"><button type="button" class="btn btn-small pull-right next-month" ng-click="nextMonth()"><i class="icon-chevron-right"></i></button></th>
+      </tr>
+      <tr class="text-center">
+        <th>#</th>
+        <th ng-repeat="day in days">{{day | date:'EEE'}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="week in month.weeks">
+        <td class="text-center"><a href ng-click="weekClicked({week: week})">{{week.number}}</a></td>
+        <td ng-repeat="day in week.days" class="text-center">
+          <button type="button"
+            ng-hide="day.placeholder"
+            style="width:100%;"
+            class="btn btn-small select-day"
+            ng-class="{'btn-info': isSelected(day), 'btn-primary': isBeginOfRange(day), 'btn-warning': isInsideRange(day)}"
+            ng-click="select(day)"
+            ng-disabled="isDisabled(day)">{{day.number}}</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+"""
+module = angular.module('powow.bootstrap.date-range.template.date-range', [])
+
+registerTemplate = ($templateCache) ->
+  $templateCache.put('/src/date-range.html', template)
+
+module.run(['$templateCache', registerTemplate])

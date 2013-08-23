@@ -17,15 +17,32 @@ module.run(['$templateCache', registerTemplate])
   EOF
 end
 
+task :clean do
+  FileUtils.rm_rf("build")
+  FileUtils.mkdir_p("build/js")
+  FileUtils.mkdir_p("build/coffee")
+end
+
 desc "Build a compiled version of the project"
-task :build do
-  templates = ["date-range", "date-range-popup"].map do |template|
-    template_file(template)
+task :build => :build_js
+
+task :build_js => :build_coffee do
+  files = ["date-range.template", "date-range-popup.template", "date-range", "manifest"].map do |f|
+    File.read("build/coffee/#{f}.coffee")
   end
-  files = ["date-range", "manifest"].map { |f| File.read("src/#{f}.coffee") }
 
-  src = (templates + files).map { |s| CoffeeScript.compile(s) }.join
+  src = files.map { |s| CoffeeScript.compile(s) }.join
 
-  FileUtils.mkdir_p("build")
-  File.write("build/angular-date-range.js", src)
+  File.write("build/js/angular-date-range.js", src)
+end
+
+task :build_coffee => :clean do
+  ["date-range", "manifest"].each do |f|
+    FileUtils.cp("src/#{f}.coffee", "build/coffee")
+  end
+
+  ["date-range", "date-range-popup"].each do |template|
+    src = template_file(template)
+    File.write("build/coffee/#{template}.template.coffee", src)
+  end
 end
