@@ -219,12 +219,26 @@ dateRangeDirective = ($document, $position) ->
         popup.css('display', 'none')
         $document.unbind('click', hidePopup)
 
+      getPopupPosition = ->
+        # popup must be shown to check it's position
+        popup.css display: 'block', top: '-9999px', left: '-9999px'
+        popupPosition = $position.position(popup)
+
+      popupOverTheRightWindowBorder = (inputPosition, popupPosition) ->
+        inputPosition.left + popupPosition.width > window.innerWidth
+
       showPopup = ->
-        position = $position.position(input)
+        inputPosition = $position.position(input)
+        popupPosition = getPopupPosition()
+
+        if popupOverTheRightWindowBorder(inputPosition, popupPosition)
+          left = inputPosition.left - popupPosition.width + inputPosition.width
+        else
+          left = inputPosition.left
+
         popup.css 
-          display: 'block'
-          top: position.top + position.height + 'px'
-          left: position.left + 'px'
+          top: inputPosition.top + inputPosition.height + 'px'
+          left: left + 'px'
 
       input.on 'focus', ->
         angular.element(document.getElementsByClassName('date-range-popup')).css('display', 'none')

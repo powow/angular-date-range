@@ -376,7 +376,7 @@
           element.removeAttr(original);
         }
         return function(scope, element, attributes) {
-          var hidePopup, popup, showPopup;
+          var getPopupPosition, hidePopup, popup, popupOverTheRightWindowBorder, showPopup;
           popup = element.find('ul');
           input = element.find('input');
           popup.css('display', 'none');
@@ -384,13 +384,30 @@
             popup.css('display', 'none');
             return $document.unbind('click', hidePopup);
           };
-          showPopup = function() {
-            var position;
-            position = $position.position(input);
-            return popup.css({
+          getPopupPosition = function() {
+            var popupPosition;
+            popup.css({
               display: 'block',
-              top: position.top + position.height + 'px',
-              left: position.left + 'px'
+              top: '-9999px',
+              left: '-9999px'
+            });
+            return popupPosition = $position.position(popup);
+          };
+          popupOverTheRightWindowBorder = function(inputPosition, popupPosition) {
+            return inputPosition.left + popupPosition.width > window.innerWidth;
+          };
+          showPopup = function() {
+            var inputPosition, left, popupPosition;
+            inputPosition = $position.position(input);
+            popupPosition = getPopupPosition();
+            if (popupOverTheRightWindowBorder(inputPosition, popupPosition)) {
+              left = inputPosition.left - popupPosition.width + inputPosition.width;
+            } else {
+              left = inputPosition.left;
+            }
+            return popup.css({
+              top: inputPosition.top + inputPosition.height + 'px',
+              left: left + 'px'
             });
           };
           input.on('focus', function() {
